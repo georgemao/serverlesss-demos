@@ -49,13 +49,40 @@ npm install --save aws-amplify aws-amplify-react aws-appsync graphql-tag react-r
 ```
 amplify add codegen --apiId [AppSyncApiId from the outputs or from the Appsync console]
 ```
-
-You should now have a new folder `/src/graphql` and a new file `/src/aws-exports.js`.
+You should now have a new folder `/src/graphql` and a new file `/src/aws-exports.js`. If you are missing the `aws-exports.js` file, you can download it from your AppSync console. Just select your API, switch to Javscript, and Download the config.
 
 ## Step 4: Deploy the React UI components
 
+1. Deploy the React Components. Copy the  /Components folder to /src/Components
+2. Deploy the React Routes. Copy the /Routes folder to /src/Routes
+3. Deploy the base app files. Copy all JS and JSX files from /src. 
+- index.js
+- main.jsx
+4. Deploy all of the public static files. 
+- /public/index.html
+- /public/images/
+
+>> You will need to update a your applicataion code to point to the Cognito deployment. Open `main.jsx` and on line: 42-46. Replace `region`, `userPoolId` and `userPoolWebClientId` with your values from the Cloudformation outputs
+
 ## Step 5: Test
+
+You can run any React application locally with at the `npm start` command. This will host and deploy your application to `https://localhost:3000`
 
 ## Step 6: Build
 
+When you are ready to deploy your application, react requires a build process. This minifies and compiles your code. Run `npm run build`. 
+
+You should now have a /build folder. 
+
 ## Step 7: Deploy
+
+At this point you have two options:
+
+1. You can use Amplify to deploy your app for you. Just run `amplify add hosting`. This creates an S3 bucket.
+2. Manually deploy the contents of the /build folder to a S3 bucket. Enable website hosting.
+
+## Step 8: Optional. Add CloudFront CDN.
+
+Serving files from S3 is expensive and slower than from CloudFront. You can add create a CloudFront Distro and add your S3 bucket as an origin. 
+
+>> You will need to add a workaround for CloudFront to properly serve React/S3 applications.
