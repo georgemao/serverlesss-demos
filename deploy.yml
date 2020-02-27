@@ -1,0 +1,410 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  APIName:
+    Type: String
+    Description: Name of the API - used to generate unique names for resources
+    MinLength: 3
+    MaxLength: 20
+    AllowedPattern: '^[a-zA-Z][a-zA-Z0-9_]*$'
+
+  APIKey:
+    Type: String
+    Default: 1614085199 # This is 2/24/2021
+    MinLength: 3
+    MaxLength: 25
+    Description: Enter an Epoch time that's at least 1 day in the future. Use https://www.epochconverter.com/
+
+  CognitoDomain:
+    Type: String
+    MinLength: 3
+    MaxLength: 63
+    AllowedPattern: ^[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?$
+    Description: Enter a string. Must be alpha numeric 3-63 in length.
+
+Resources:
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub ${CognitoDomain}-user-pool
+      UsernameConfiguration: 
+        CaseSensitive: false
+      AutoVerifiedAttributes:
+        - email
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Mutable: false
+          Required: true
+        - Name: name
+          AttributeDataType: String
+          Mutable: true
+          Required: true
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      AllowedOAuthFlowsUserPoolClient: true
+      CallbackURLs:
+        - http://localhost:3000
+      AllowedOAuthFlows:
+        - code
+        - implicit
+      AllowedOAuthScopes:
+        - phone
+        - email
+        - openid
+        - profile
+      SupportedIdentityProviders:
+        - COGNITO
+
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Ref CognitoDomain
+      UserPoolId: !Ref UserPool
+
+  appSyncLocationFn: 
+    Type: "AWS::Lambda::Function"
+    Properties: 
+      Handler: "index.handler"
+      Role: 
+        Fn::GetAtt: 
+          - "LambdaExecutionRole"
+          - "Arn"
+      Code:
+        ZipFile: !Sub |
+          exports.handler = async (event) => {
+    
+              let locations  = ['Berlin','DC','Las Vegas','Paris','Rome'];
+              var item = locations[Math.floor(Math.random()*locations.length)];
+              console.log(item);
+              
+              const response = item;
+              
+              return response;
+          };
+
+      Runtime: "nodejs12.x"
+      Timeout: 3
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: root
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:*
+            Resource: arn:aws:logs:*:*:*
+
+  DynamoDBContactsTable:
+    Type: "AWS::DynamoDB::Table"
+    Description: "Data store for AWS AppSync Contact Type"
+    Properties:
+      TableName: !Sub ${APIName}-contacts-table
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: "ContactId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "ContactId"
+          KeyType: "HASH"
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+
+  DynamoDBRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${APIName}-appsync-dynamodb-role
+      ManagedPolicyArns:
+        - Ref: AppSyncDynamoDBPolicy
+        - Ref: AppSyncLambdaPolicy
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Principal:
+              Service:
+                - appsync.amazonaws.com
+    DependsOn:
+      - AppSyncDynamoDBPolicy
+      - AppSyncLambdaPolicy
+
+  AppSyncDynamoDBPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Managed policy to allow AWS AppSync to access the tables created by this template.
+      Path: /appsync/
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:PutItem
+              - dynamodb:DeleteItem
+              - dynamodb:UpdateItem
+              - dynamodb:Query
+              - dynamodb:Scan
+              - dynamodb:BatchGetItem
+              - dynamodb:BatchWriteItem
+            Resource: !Join [ "", [ !GetAtt DynamoDBContactsTable.Arn, "*" ] ]
+
+  AppSyncLambdaPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Managed policy to allow AWS AppSync to invoke Functions created by this template.
+      Path: /appsync/
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - lambda:InvokeFunction
+            Resource: !GetAtt appSyncLocationFn.Arn
+    #DependsOn: appSyncLocationFn
+
+  AppSyncApi:
+    Type: "AWS::AppSync::GraphQLApi"
+    Description: "The GraphQL API for the Contacts App"
+    Properties:
+      AuthenticationType: "API_KEY"
+      XrayEnabled: true
+      Name: !Sub ${APIName}
+      AdditionalAuthenticationProviders:
+        - AuthenticationType: AMAZON_COGNITO_USER_POOLS
+          UserPoolConfig:
+            AwsRegion: !Ref "AWS::Region"
+            UserPoolId: !Ref UserPool
+  
+  AppSyncSchema:
+    Type: "AWS::AppSync::GraphQLSchema"
+    Properties:
+      ApiId: !GetAtt AppSyncApi.ApiId
+      Definition: |
+        type Contact {
+          ContactId: ID!
+          email: String
+          fname: String
+          lname: String
+          location: String
+        }
+        type Query {
+          allContacts(limit: Int, nextToken: String): [Contact]
+          getContact(ContactId: ID!): Contact
+        }
+        type Mutation {
+          stream(sensorId: String!, temp: String!): Sensor
+          @aws_api_key
+          @aws_cognito_user_pools
+
+          saveContact(email: String!, fname: String!, lname: String!): Contact
+          
+          deleteContact(ContactId: ID!): Contact
+          @aws_auth(cognito_groups: ["Admins"])
+
+          updateContact(ContactId: String!, email: String, fname: String, lname: String): Contact
+        }
+        type Schema {
+          query: Query
+          mutation: Mutation
+          subscription: Subscription
+        }
+
+        type Sensor @aws_api_key {
+          sensorId: String!
+          temp: String!
+        }
+        type Subscription {
+          onSaveContact: Contact
+          @aws_subscribe(mutations: ["saveContact"])
+
+          onStream: Sensor
+          @aws_subscribe(mutations: ["stream"])
+          @aws_cognito_user_pools
+          @aws_api_key
+
+        } 
+  
+  AppSyncContactsLocationDataSource:
+    Type: AWS::AppSync::DataSource
+    Properties:
+      ApiId: !GetAtt AppSyncApi.ApiId
+      Name: !Sub ${APIName}_contacts_location_fn
+      Description: "Lambda fn that finds the contact's current location"
+      Type: "AWS_LAMBDA"
+      ServiceRoleArn: !GetAtt DynamoDBRole.Arn
+      LambdaConfig:
+        LambdaFunctionArn: !GetAtt appSyncLocationFn.Arn
+
+  AppSyncContactsTableDataSource:
+    Type: "AWS::AppSync::DataSource"
+    Properties:
+      ApiId: !GetAtt AppSyncApi.ApiId
+      Name: !Sub ${APIName}_contacts_table
+      Description: "The Contacts Table AppSync Data Source"
+      Type: AMAZON_DYNAMODB
+      ServiceRoleArn: !GetAtt DynamoDBRole.Arn
+      DynamoDBConfig:
+        TableName: !Ref DynamoDBContactsTable
+        AwsRegion: !Sub ${AWS::Region}
+  
+
+  AppSyncAllContactsQueryResolver:
+    Type: "AWS::AppSync::Resolver"
+    DependsOn: AppSyncSchema
+    Properties:
+      ApiId: !GetAtt AppSyncApi.ApiId
+      TypeName: Query
+      FieldName: allContacts
+      DataSourceName: !GetAtt AppSyncContactsTableDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version" : "2017-02-28",
+          "operation" : "Scan",
+          ## Add 'limit' and 'nextToken' arguments to this field in your schema to implement pagination. **
+          "limit": $util.defaultIfNull(${ctx.args.limit}, 20),
+          "nextToken": $util.toJson($util.defaultIfNullOrBlank($ctx.args.nextToken, null))
+        }
+      ResponseMappingTemplate: |
+        $util.toJson($ctx.result.items)
+
+  AppSyncGetContactQueryResolver:
+    Type: "AWS::AppSync::Resolver"
+    DependsOn: AppSyncSchema
+    Properties:
+      ApiId: !GetAtt AppSyncApi.ApiId
+      TypeName: Query
+      FieldName: getContact
+      DataSourceName: !GetAtt AppSyncContactsTableDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version": "2017-02-28",
+          "operation": "GetItem",
+          "key": {
+            "ContactId": $util.dynamodb.toDynamoDBJson($ctx.args.ContactId)
+          }
+        }
+      ResponseMappingTemplate: "$util.toJson($ctx.result)"
+
+
+  AppSyncSaveContactMutationResolver:
+    Type: "AWS::AppSync::Resolver"
+    DependsOn: AppSyncSchema
+    Properties:
+      ApiId: !GetAtt AppSyncApi.ApiId
+      TypeName: Mutation
+      FieldName: saveContact
+      DataSourceName: !GetAtt AppSyncContactsTableDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version": "2017-02-28",
+          "operation": "PutItem",
+          "key": {
+            "ContactId": $util.dynamodb.toDynamoDBJson($util.autoId())
+          },
+          "attributeValues": $util.dynamodb.toMapValuesJson($ctx.args)
+        }
+      ResponseMappingTemplate: "$util.toJson($ctx.result)"
+
+  AppSyncDeleteContactMutationResolver:
+    Type: "AWS::AppSync::Resolver"
+    DependsOn: AppSyncSchema
+    Properties:
+      ApiId: !GetAtt AppSyncApi.ApiId
+      TypeName: Mutation
+      FieldName: updateContact
+      DataSourceName: !GetAtt AppSyncContactsTableDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version" : "2017-02-28",
+          "operation" : "UpdateItem",
+          "key" : {
+              ## If object "id" should come from GraphQL arguments, change to $util.dynamodb.toDynamoDBJson($ctx.args.id)
+              "ContactId": $util.dynamodb.toDynamoDBJson($ctx.args.ContactId)
+          },
+          "update" : {
+              "expression" : "SET fname = :fname, lname = :lname, email = :email",
+              "expressionValues" : {
+                  ":fname" : { "S" : "$context.args.fname" },
+                  ":lname" : { "S" : "$context.args.lname" },
+                  ":email" : { "S" : "$context.args.email" },
+              }
+          }
+        }
+      ResponseMappingTemplate: "$util.toJson($ctx.result)"
+
+  AppSyncUpdateContactMutationResolver:
+    Type: "AWS::AppSync::Resolver"
+    DependsOn: AppSyncSchema
+    Properties:
+      ApiId: !GetAtt AppSyncApi.ApiId
+      TypeName: Mutation
+      FieldName: deleteContact
+      DataSourceName: !GetAtt AppSyncContactsTableDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version": "2017-02-28",
+          "operation": "DeleteItem",
+          "key": {
+            "ContactId": $util.dynamodb.toDynamoDBJson($ctx.args.ContactId)
+          }
+        }
+      ResponseMappingTemplate: "$util.toJson($ctx.result)"
+
+  AppSyncLocationFieldResolver:
+    Type: "AWS::AppSync::Resolver"
+    DependsOn: AppSyncSchema
+    Properties:
+      ApiId: !GetAtt AppSyncApi.ApiId
+      TypeName: Contact
+      FieldName: location
+      DataSourceName: !GetAtt AppSyncContactsLocationDataSource.Name
+      RequestMappingTemplate: |
+        {
+          "version" : "2017-02-28",
+          "operation": "Invoke",
+          "payload": $util.toJson($context.args)
+        }
+      ResponseMappingTemplate: "$util.toJson($ctx.result)"
+
+  
+  ApiKey:
+    Type: AWS::AppSync::ApiKey
+    Properties:
+      ApiId: !GetAtt AppSyncApi.ApiId
+      Expires: !Ref APIKey #1614085199 This is Feb24, 2021. Need to make this dynamic, or maybe via an Parameter https://www.epochconverter.com/
+
+Outputs:
+  AppSyncApiId:
+    Description: "Appsync API ID"
+    Value: !GetAtt AppSyncApi.ApiId
+  ApiKey:
+    Description: "Appsync key"
+    Value: !GetAtt ApiKey.ApiKey
+  CognitoUserPoolID:
+    Value: !Ref UserPool
+    Description: The UserPool ID
+  CognitoAppClientID:
+    Value: !Ref UserPoolClient
+    Description: The app client
+  HostedUIURL:
+    Value: !Sub https://${CognitoDomain}.auth.us-west-2.amazoncognito.com/login?client_id=${UserPoolClient}&response_type=code&scope=email+openid+phone+profile&redirect_uri=http://localhost:3000
+    Description: The hosted UI URL
