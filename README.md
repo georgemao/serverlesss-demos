@@ -1,13 +1,13 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Overview
-This project demostrates a reference design for a Serverless web applications. The design uses the following implementations:
+This project demostrates a reference design for a Serverless web application. The design uses the following implementations:
 
 ### Front End deployed to S3. Served via CloudFront
-- ReactJS: UI/UX
+- ReactJS & [Amplify React SDK](https://aws-amplify.github.io/docs/js/react): UI/UX
 - Cognito: Security (Userpools, Federation via Google, Amazon, Facebook, and SAML)
-- Amplify Framework (Development)
-- Amplify API (Development)
+- [Amplify Framework](https://aws.amazon.com/amplify/framework/): Development Framework
+- [Amplify API](https://aws-amplify.github.io/docs/js/api): API Library
 
 ### API Tier
 - AppSync (GraphQL API)
