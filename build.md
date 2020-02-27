@@ -45,10 +45,17 @@ npm install --save aws-amplify aws-amplify-react aws-appsync graphql-tag react-r
 - react
 - src
 
+![Init](amplifyInit.png)
+
 2. Auto generate the GraphQL queries from the deployed Schema
+
 ```
 amplify add codegen --apiId [AppSyncApiId from the outputs or from the Appsync console]
 ```
+
+- Accept all defaults
+![Codegen](amplifyCodegen.png)
+
 You should now have a new folder `/src/graphql` and a new file `/src/aws-exports.js`. If you are missing the `aws-exports.js` file, you can download it from your AppSync console. Just select your API, switch to Javscript, and Download the config.
 
 ## Step 4: Deploy the React UI components
