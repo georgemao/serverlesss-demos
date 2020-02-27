@@ -29,7 +29,7 @@ This Cloudformation deployment will require two parameters:
 - AppSyncEndpoint: Use the same Endpoint from the previous CloudFormation outputs
 - APIKey: Use the same APIKey from the previous CloudFormation outputs
 
-[Build & Deploy](https://github.com/georgmao/realtime-stream-examples).
+[Build & Deploy](https://github.com/georgmao/realtime-stream-examples) it!
 
 ![Arch](https://github.com/georgmao/realtime-stream-examples/blob/master/kinesis.png)
 
