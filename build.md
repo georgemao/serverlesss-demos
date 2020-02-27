@@ -47,13 +47,11 @@ npm install --save aws-amplify aws-amplify-react aws-appsync graphql-tag react-r
 
 ![Init](amplifyInit.png)
 
-2. Auto generate the GraphQL queries from the deployed Schema
+2. Auto generate the GraphQL queries from the deployed Schema. Accept all defaults.
 
 ```
 amplify add codegen --apiId [AppSyncApiId from the outputs or from the Appsync console]
 ```
-
-- Accept all defaults
 
 ![Codegen](amplifyCodegen.png)
 
