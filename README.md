@@ -16,7 +16,7 @@ This project demostrates a reference design for a Serverless web application. Th
 - Lambda (Business Logic)
 
 ### Data Tier
-DynamoDB (Data Storage)
+- DynamoDB (Data Storage)
 
 ## Steps to Build & Deploy the base application
 [Build & Deploy](build.md).
