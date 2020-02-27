@@ -70,7 +70,7 @@ You can run any React application locally with at the `npm start` command. This 
 
 ## Step 6: Build
 
-When you are ready to deploy your application, react requires a build process. This minifies and compiles your code. Run `npm run build`. 
+When you are ready to deploy your application, React requires a build process. This minifies and compiles your code. Run `npm run build`. 
 
 You should now have a /build folder. 
 
@@ -83,6 +83,6 @@ At this point you have two options:
 
 ## Step 8: Optional. Add CloudFront CDN.
 
-Serving files from S3 is expensive and slower than from CloudFront. You can add create a CloudFront Distro and add your S3 bucket as an origin. 
+CloudFront serves content faster and cheaper than S3. You can add create a CloudFront Distro and add your S3 bucket as an origin. 
 
->> You will need to add a workaround for CloudFront to properly serve React/S3 applications.
+>> You will need to add a workaround for CloudFront to properly serve React/S3 applications. In your distribution settings, under the `Error pages` tab, `Create Custom Error Response`. Add a response for error code `404` and redirect it to `/index.html`. Then set the response code to `200 OK`.
