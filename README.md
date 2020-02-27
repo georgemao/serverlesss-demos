@@ -1,7 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Overview
-This project demostrates a reference design for various a Serverless web application. The design uses the following implementations:
+This project demostrates a reference design for a Serverless web applications. The design uses the following implementations:
 
 ### Front End deployed to S3. Served via CloudFront
 - ReactJS: UI/UX
@@ -16,9 +16,11 @@ This project demostrates a reference design for various a Serverless web applica
 ### Data Tier
 DynamoDB (Data Storage)
 
-## Steps to Build & Deploy
+## Steps to Build & Deploy the base application
 [Build & Deploy](build.md).
 
+## Steps to add realtime streaming features
+[Build & Deploy](realtime.md).
 
 ## Available Scripts
 
