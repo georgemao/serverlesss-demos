@@ -20,7 +20,19 @@ DynamoDB (Data Storage)
 [Build & Deploy](build.md).
 
 ## Steps to add realtime streaming features
+There is a realtime streaming demo built into this application, but you must deploy the supporting features seperately. 
+Once deployed you can view the /Stream resource. This is a React page that is setup to listen to Subscriptions emitted from your AppSync endpoint. You will need to deploy the following features to enable this.
+
+This Cloudformation deployment will require two parameters:
+- AppSyncEndpoint: Use the same Endpoint from the previous CloudFormation outputs
+- APIKey: Use the same APIKey from the previous CloudFormation outputs
+
 [Build & Deploy](https://github.com/georgmao/realtime-stream-examples).
+![Arch](https://github.com/georgmao/realtime-stream-examples/blob/master/kinesis.png)
+
+
+// insert new diagram
+
 
 ## Available Scripts
 
