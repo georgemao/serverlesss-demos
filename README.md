@@ -20,7 +20,7 @@ DynamoDB (Data Storage)
 [Build & Deploy](build.md).
 
 ## Steps to add realtime streaming features
-[Build & Deploy](realtime.md).
+[Build & Deploy](https://github.com/georgmao/realtime-stream-examples).
 
 ## Available Scripts
 
