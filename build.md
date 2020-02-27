@@ -34,11 +34,11 @@ npm install --save aws-amplify aws-amplify-react aws-appsync graphql-tag react-r
 
 1. Open the CloudFormation console and deploy the provided file `deploy.yml`. There will be 3 parameters you must specify: `APIName`, `APIKey`, `CognitoDomain`.
 
-2. When complete, goto the CloudFormation `outputs` tab and reference all of the values. You will use them later.
+2. When complete, goto the CloudFormation `outputs` tab and reference all of the values. You will use them later. You can test the Cognito hosted ui by pasting the `HostedUIURL` into your browser. You should see a Authentication screen.
 
 ## Step 3: Amplify to bootstrap your project && Auto Generate GraphQL queries from the schema
 
-1. In a command line run `amplify init`. This will run through a series of questions. Just accept all defaults. Make sure you use the following values
+1. In a command line run `amplify init`. This will run through a series of questions. Make sure you use the following values:
 
 - Visual Studio Code
 - javascript
@@ -62,13 +62,15 @@ You should now have a new folder `/src/graphql` and a new file `/src/aws-exports
 1. Deploy the React Components. Copy the  /Components folder to /src/Components
 2. Deploy the React Routes. Copy the /Routes folder to /src/Routes
 3. Deploy the base app files. Copy all JS and JSX files from /src. 
+
 - index.js
 - main.jsx
+
 4. Deploy all of the public static files. 
 - /public/index.html
 - /public/images/
 
->> You will need to update a your applicataion code to point to the Cognito deployment. Open `main.jsx` and on line: 42-46. Replace `region`, `userPoolId` and `userPoolWebClientId` with your values from the Cloudformation outputs
+> You will need to update a your applicataion code to point to the Cognito deployment. Open `main.jsx` and on line: 42-46. Replace `region`, `userPoolId` and `userPoolWebClientId` with your values from the Cloudformation outputs
 
 ## Step 5: Test
 
@@ -91,4 +93,4 @@ At this point you have two options:
 
 CloudFront serves content faster and cheaper than S3. You can add create a CloudFront Distro and add your S3 bucket as an origin. 
 
->> You will need to add a workaround for CloudFront to properly serve React/S3 applications. In your distribution settings, under the `Error pages` tab, `Create Custom Error Response`. Add a response for error code `404` and redirect it to `/index.html`. Then set the response code to `200 OK`.
+> You will need to add a workaround for CloudFront to properly serve React/S3 applications. This is because React routes do not update the URL to an actual asset stored in S3. In your distribution settings, under the `Error pages` tab, `Create Custom Error Response`. Add a response for error code `404` and redirect it to `/index.html`. Then set the response code to `200 OK`.
