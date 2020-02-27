@@ -54,6 +54,7 @@ amplify add codegen --apiId [AppSyncApiId from the outputs or from the Appsync c
 ```
 
 - Accept all defaults
+
 ![Codegen](amplifyCodegen.png)
 
 You should now have a new folder `/src/graphql` and a new file `/src/aws-exports.js`. If you are missing the `aws-exports.js` file, you can download it from your AppSync console. Just select your API, switch to Javscript, and Download the config.
