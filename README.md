@@ -3,6 +3,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Overview
 This project demostrates a reference design for a Serverless web application. The design uses the following implementations:
 
+![Arch](arch.png)
+
 ### Front End deployed to S3. Served via CloudFront
 - ReactJS & [Amplify React SDK](https://aws-amplify.github.io/docs/js/react): UI/UX
 - Cognito: Security (Userpools, Federation via Google, Amazon, Facebook, and SAML)
@@ -28,11 +30,12 @@ This Cloudformation deployment will require two parameters:
 - APIKey: Use the same APIKey from the previous CloudFormation outputs
 
 [Build & Deploy](https://github.com/georgmao/realtime-stream-examples).
+
 ![Arch](https://github.com/georgmao/realtime-stream-examples/blob/master/kinesis.png)
 
+Once deployed here is your final application architecture:
 
-// insert new diagram
-
+![Arch](/archWithRealtimeStreaming.png)
 
 ## Available Scripts
 
