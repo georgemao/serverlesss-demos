@@ -3,6 +3,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ## Overview
 This project demostrates a reference design for a Serverless web application. The design uses the following implementations:
 
+![Arch](arch.png)
+
 ### Front End deployed to S3. Served via CloudFront
 - ReactJS & [Amplify React SDK](https://aws-amplify.github.io/docs/js/react): UI/UX
 - Cognito: Security (Userpools, Federation via Google, Amazon, Facebook, and SAML)
@@ -20,7 +22,20 @@ DynamoDB (Data Storage)
 [Build & Deploy](build.md).
 
 ## Steps to add realtime streaming features
-[Build & Deploy](https://github.com/georgmao/realtime-stream-examples).
+There is a realtime streaming demo built into this application, but you must deploy the supporting features seperately. 
+Once deployed you can view the /Stream resource. This is a React page that is setup to listen to Subscriptions emitted from your AppSync endpoint. You will need to deploy the following features to enable this.
+
+This Cloudformation deployment will require two parameters:
+- AppSyncEndpoint: Use the same Endpoint from the previous CloudFormation outputs
+- APIKey: Use the same APIKey from the previous CloudFormation outputs
+
+[Build & Deploy](https://github.com/georgmao/realtime-stream-examples) it!
+
+![Arch](https://github.com/georgmao/realtime-stream-examples/blob/master/kinesis.png)
+
+Once deployed here is your final application architecture:
+
+![Arch](/archWithRealtimeStreaming.png)
 
 ## Available Scripts
 
