@@ -38,14 +38,12 @@ const oauth = {
   Amplify.configure(awsconfig);
   Amplify.configure({
     Auth: {
-        
         // REQUIRED - Amazon Cognito Region
         region: 'us-west-2',
         // OPTIONAL - Amazon Cognito User Pool ID
         userPoolId: 'us-west-2_sDg68GJKt',
         // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
         userPoolWebClientId: '74gaojv8p62ot88h02qmfe70jr',
-        
         oauth: oauth
     }
   });
