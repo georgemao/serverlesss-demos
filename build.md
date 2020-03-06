@@ -15,6 +15,8 @@ npm install -g @aws-amplify/cli (sudo if necessary)
 
 4. Configure the Amplify CLI. Open a command prompt and type `amplify configure`. Follow the instructions.
 
+This step creates an IAM user that Amplify will use to execute all management/deployment commands.
+
 ## Step 1: Install React dependencies
 
 This step will create a top level folder for your project. The folder will be called 'serverless-demos'. 
@@ -46,6 +48,8 @@ npm install --save aws-amplify aws-amplify-react aws-appsync graphql-tag react-r
 2. When complete, goto the CloudFormation `outputs` tab and reference all of the values. You will use them later. You can test the Cognito hosted ui by pasting the `HostedUIURL` into your browser. You should see a Authentication screen.
 
 ## Step 3: Amplify to bootstrap your project && Auto Generate GraphQL queries from the schema
+
+ Make sure your command prompt is in your project directory (/workspace/serverless-demos).
 
 1. In your command prompt run `amplify init`. This will run through a series of questions. Make sure you use the following values:
 
