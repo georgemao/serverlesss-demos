@@ -1,7 +1,7 @@
 
 ## Step 0: Prereqs
 
-1. [Install Node](https://nodejs.org/en/download/) for your OS
+1. [Install Node](https://nodejs.org/en/download/) for your OS. Use Node 10 or newer.
 2. Install npx for Node. npx is a package runner for npm. Recent versions of node will include npx. Check by running `npx` in your command prompt.
 
 ```
@@ -17,7 +17,8 @@ npm install -g @aws-amplify/cli (sudo if necessary)
 
 ## Step 1: Install React dependencies
 
-Make sure you are in a workspace folder
+This step will create a top level folder for your project. The folder will be called 'serverless-demos'. 
+Make sure you execute these commands from a directory you wish to use as your workspace area. For example: (/Users/georgemao/workspace).
 
 1. Bootstrap your React project
 
@@ -26,6 +27,8 @@ npx create-react-app serverless-demos
 ```
 
 2. Install all React dependencies
+
+First cd into your project folder: `cd serverless-demos`. Then:
 ```
 npm install --save aws-amplify aws-amplify-react aws-appsync graphql-tag react-router-dom semantic-ui-react chart.js react-chartjs-2
 ```
@@ -33,6 +36,10 @@ npm install --save aws-amplify aws-amplify-react aws-appsync graphql-tag react-r
 ## Step 2: Deploy the backend (Cognito IDP, Appsync API and Data tier) via CloudFormation
 
 1. Open the CloudFormation console and deploy the provided file `deploy.yml`. There will be 3 parameters you must specify: `APIName`, `APIKey`, `CognitoDomain`.
+
+- APIName: This can be any string
+- APIKeyExpiration: This is the expiration time for the API key. Enter an Epoch time that's at least 1 day in the future. Use https://www.epochconverter.com/
+- CognitoDomain: This is the top level DNS you want Cognito to use to host your login UI.
 
 2. When complete, goto the CloudFormation `outputs` tab and reference all of the values. You will use them later. You can test the Cognito hosted ui by pasting the `HostedUIURL` into your browser. You should see a Authentication screen.
 
