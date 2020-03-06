@@ -87,20 +87,20 @@ You should now have a new folder in your project folder `src/graphql` and a new 
 
 ## Step 5: Test
 
-You can run any React application locally with at the `npm start` command. This will host and deploy your application to `https://localhost:3000`
+You can run any React application locally (in dev mode) with the `npm start` command. This will deploy & host your application to `https://localhost:3000`
 
 ## Step 6: Build
 
 When you are ready to deploy your application, React requires a build process. This minifies and compiles your code. Run `npm run build`. 
 
-You should now have a /build folder. 
+You should now have a `build` folder. 
 
 ## Step 7: Deploy
 
 At this point you have two options:
 
 1. You can use Amplify to deploy your app for you. Just run `amplify add hosting`. This creates an S3 bucket.
-2. Manually deploy the contents of the /build folder to a S3 bucket. Enable website hosting.
+2. Manually deploy the contents of the `build` folder to a S3 bucket. Enable website hosting.
 
 ## Step 8: Optional. Add CloudFront CDN.
 
