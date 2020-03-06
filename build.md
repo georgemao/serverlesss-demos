@@ -37,6 +37,10 @@ npm install --save aws-amplify aws-amplify-react aws-appsync graphql-tag react-r
 
 1. Open the CloudFormation console and deploy the provided file `deploy.yml`. There will be 3 parameters you must specify: `APIName`, `APIKey`, `CognitoDomain`.
 
+- APIName: This can be any string
+- APIKeyExpiration: This is the expiration time for the API key. Enter an Epoch time that's at least 1 day in the future. Use https://www.epochconverter.com/
+- CognitoDomain: This is the top level DNS you want Cognito to use to host your login UI.
+
 2. When complete, goto the CloudFormation `outputs` tab and reference all of the values. You will use them later. You can test the Cognito hosted ui by pasting the `HostedUIURL` into your browser. You should see a Authentication screen.
 
 ## Step 3: Amplify to bootstrap your project && Auto Generate GraphQL queries from the schema
