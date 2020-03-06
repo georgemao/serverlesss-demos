@@ -1,7 +1,7 @@
 
 ## Step 0: Prereqs
 
-1. [Install Node](https://nodejs.org/en/download/) for your OS
+1. [Install Node](https://nodejs.org/en/download/) for your OS. Use Node 10 or newer.
 2. Install npx for Node. npx is a package runner for npm. Recent versions of node will include npx. Check by running `npx` in your command prompt.
 
 ```
