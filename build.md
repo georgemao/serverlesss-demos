@@ -17,7 +17,8 @@ npm install -g @aws-amplify/cli (sudo if necessary)
 
 ## Step 1: Install React dependencies
 
-Make sure you are in a workspace folder
+This step will create a top level folder for your project. The folder will be called 'serverless-demos'. 
+Make sure you execute these commands from a directory you wish to use as your workspace area. For example: (/Users/georgemao/workspace).
 
 1. Bootstrap your React project
 
