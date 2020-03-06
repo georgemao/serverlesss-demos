@@ -35,7 +35,7 @@ npm install --save aws-amplify aws-amplify-react aws-appsync graphql-tag react-r
 
 ## Step 2: Deploy the backend (Cognito IDP, Appsync API and Data tier) via CloudFormation
 
-1. Open the CloudFormation console and deploy the provided file `deploy.yml`. There will be 3 parameters you must specify: `APIName`, `APIKey`, `CognitoDomain`.
+1. Open the CloudFormation console and deploy the provided file `deploy.yml`. There will be 3 parameters you must specify: `APIName`, `APIKeyExpiration`, `CognitoDomain`.
 
 - APIName: This can be any string
 - APIKeyExpiration: This is the expiration time for the API key. Must be a number. Enter an Epoch time that's at least 1 day in the future. Use https://www.epochconverter.com/
