@@ -28,8 +28,10 @@ npx create-react-app serverless-demos
 
 2. Install all React dependencies
 
-First cd into your project folder: `cd serverless-demos`. Then:
+First cd into your project folder:
+
 ```
+cd serverless-demos
 npm install --save aws-amplify aws-amplify-react aws-appsync graphql-tag react-router-dom semantic-ui-react chart.js react-chartjs-2
 ```
 
