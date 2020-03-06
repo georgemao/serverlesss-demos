@@ -68,13 +68,13 @@ amplify add codegen --apiId [AppSyncApiId from the outputs or from the Appsync c
 
 ![Codegen](amplifyCodegen.png)
 
-You should now have a new folder `/src/graphql` and a new file `/src/aws-exports.js`. If you are missing the `aws-exports.js` file, you can download it from your AppSync console. Just select your API, switch to Javscript, and Download the config.
+You should now have a new folder in your project folder `src/graphql` and a new file `src/aws-exports.js`. If you are missing the `aws-exports.js` file, you can download it from your AppSync console. Just select your API, switch to Javscript, and Download the config.
 
 ## Step 4: Deploy the React UI components
 
-1. Deploy the React Components. Copy the  /Components folder to /src/Components
-2. Deploy the React Routes. Copy the /Routes folder to /src/Routes
-3. Deploy the base app files. Copy all JS and JSX files from /src. 
+1. Setup the React Components. From the provided Source, copy the /Components folder to your local src/Components
+2. Setup the React Routes. Copy the /Routes folder to your local src/Routes
+3. Setup the base app files. Copy all JS and JSX files from /src to your local src folder
 
 - index.js
 - main.jsx
