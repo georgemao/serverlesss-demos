@@ -72,18 +72,18 @@ You should now have a new folder in your project folder `src/graphql` and a new 
 
 ## Step 4: Deploy the React UI components
 
-1. Setup the React Components. From the provided Source, copy the /Components folder to your local src/Components
-2. Setup the React Routes. Copy the /Routes folder to your local src/Routes
-3. Setup the base app files. Copy all JS and JSX files from /src to your local src folder
+1. Setup the React Components. From the provided Source, copy the /Components folder to your local `src/Components`
+2. Setup the React Routes. Copy the /Routes folder to your local `src/Routes`
+3. Setup the base app files. Copy all JS and JSX files from /src to your local `src` folder
 
 - index.js
 - main.jsx
 
-4. Deploy all of the public static files. 
+4. Setup all of the public static files. Copy the following from the provided source:
 - /public/index.html
 - /public/images/
 
-> You will need to update a your applicataion code to point to the Cognito deployment. Open `main.jsx` and on line: 42-46. Replace `region`, `userPoolId` and `userPoolWebClientId` with your values from the Cloudformation outputs
+> You will need to update your applicataion code to point to the Cognito deployment. Open `main.jsx` and on line: 42-46. Replace `region`, `userPoolId` and `userPoolWebClientId` with your values from the Cloudformation outputs
 
 ## Step 5: Test
 
