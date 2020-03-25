@@ -49,7 +49,7 @@ npm install --save aws-amplify aws-amplify-react aws-appsync graphql-tag react-r
 
 ## Step 3: Amplify to bootstrap your project && Auto Generate GraphQL queries from the schema
 
- Make sure your command prompt is in your project directory (/workspace/serverless-demos).
+ **Make sure your command prompt is in your project directory (/workspace/serverless-demos).**
 
 1. In your command prompt run `amplify init`. This will run through a series of questions. Make sure you use the following values:
 
